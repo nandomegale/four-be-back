@@ -9,7 +9,7 @@ class Sender {
 
   async sendText(to: string, content: string) {
     //553599123084@c.us
-    this.client.sendText(to, content);
+    await this.client.sendText(to, content);
   }
 
   private initialize() {
@@ -23,10 +23,6 @@ class Sender {
 
     const start = (client: Whatsapp) => {
       this.client = client;
-      this.sendText(
-        "553599123084@c.us",
-        "Olá, essa é uma mensagem enviada pelo robô"
-      );
     };
 
     create("ws-sender", qr, status)
