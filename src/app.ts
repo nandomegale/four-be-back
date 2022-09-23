@@ -13,9 +13,14 @@ app.get("/status", (req: Request, res: Response) => {});
 app.post("/send", async (req: Request, res: Response) => {
   const { number, message } = req.body;
   try {
-    console.log(number, message);
-    await sender.sendText(number, message);
-    return res.status(200).json();
+    const re: RegExp = /\d{10}/g;
+    const valido = re.test(number);
+    if (valido) {
+      await sender.sendText(number, message);
+      return res.status(200).json();
+    } else {
+      throw Error("número de telefone fora do padrão");
+    }
   } catch (error) {
     console.log(error);
     res.status(500).json({ status: "error", message: error });
