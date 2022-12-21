@@ -1,7 +1,8 @@
-import { CatchQR, create, StatusFind, Whatsapp } from "venom-bot";
+//import { CatchQR, StatusFind, Whatsapp } from "venom-bot";
+const venom = require("venom-bot")
 
 class Client {
-  public WhatsappClient: Whatsapp;
+  public WhatsappClient: any;
   private _status: string;
   private _qrCode: string;
 
@@ -18,21 +19,21 @@ class Client {
   }
 
   private initialize() {
-    const catchQR: CatchQR = (qrCode: string) => {
+    const catchQR: any = (qrCode: string) => {
       this._qrCode = qrCode;
     };
 
-    const statusFind: StatusFind = (statusGet: string, session: string) => {
+    const statusFind: any = (statusGet: string, session: string) => {
       this._status = statusGet;
     };
 
-    const start = (client: Whatsapp) => {
+    const start = (client: any) => {
       this.WhatsappClient = client;
     };
 
-    create("ws-sender", catchQR, statusFind)
-      .then((client) => start(client))
-      .catch((error) => console.error(error));
+    venom.create("ws-sender", catchQR, statusFind)
+      .then((client: any) => start(client))
+      .catch((error: any) => console.error(error));
   }
 }
 
