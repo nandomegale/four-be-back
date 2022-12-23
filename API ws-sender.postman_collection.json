@@ -1,0 +1,196 @@
+{
+	"info": {
+		"_postman_id": "61a00695-4539-45f3-93e7-6da935caecc6",
+		"name": "API ws-sender",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "get status",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{api_url}}/status",
+					"host": [
+						"{{api_url}}"
+					],
+					"path": [
+						"status"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "send message",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"number\": \"11968616839\",\r\n    \"message\": \"oii, estou refatorando o robô. testando mensagem unitária\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api_url}}/sendmessage",
+					"host": [
+						"{{api_url}}"
+					],
+					"path": [
+						"sendmessage"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "send image",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"number\": \"3599123084\",\r\n    \"imagePath\": \"https://thumbs.dreamstime.com/b/cute-white-robot-character-say-hi-eps-182561098.jpg\",\r\n    \"imageName\": \"nome da imagem\",\r\n    \"caption\": \"refatorando o robô. testando envio de imagem\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api_url}}/sendImage",
+					"host": [
+						"{{api_url}}"
+					],
+					"path": [
+						"sendImage"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "test delay",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \r\n    \"numbers\": [\"3599123084\", \"11968616839\"],\r\n    \"message\": \"Testando robo com recursividade e temporizador de 10 segundos\",\r\n    \"delay\": 10\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api_url}}/testdelay",
+					"host": [
+						"{{api_url}}"
+					],
+					"path": [
+						"testdelay"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "send message with delay",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"numbers\": [\"3599123084\", \"11968616839\"],\r\n    \"message\": \"refatorando robo com recursividade e temporizador de 10 segundos\",\r\n    \"delay\": 10\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api_url}}/sendmessagewithdelay",
+					"host": [
+						"{{api_url}}"
+					],
+					"path": [
+						"sendmessagewithdelay"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "send image with delay",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"numbers\": [\r\n        \"3599123084\",\r\n        \"11968616839\"\r\n    ],\r\n    \"imagePath\": \"https://thumbs.dreamstime.com/b/cute-white-robot-character-say-hi-eps-182561098.jpg\",\r\n    \"caption\": \"refatorando o robô. testando envio de imagem com recursividade e delay de 10 segundos 🎅🏻❤️🥳\",\r\n    \"delay\": 10\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api_url}}/sendImagewithdelay",
+					"host": [
+						"{{api_url}}"
+					],
+					"path": [
+						"sendImagewithdelay"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get all contacts",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{api_url}}/getallcontacts",
+					"host": [
+						"{{api_url}}"
+					],
+					"path": [
+						"getallcontacts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get contacts by name. queryParams: filtername",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{api_url}}/getcontactsbyname?filtername=JAN-2022",
+					"host": [
+						"{{api_url}}"
+					],
+					"path": [
+						"getcontactsbyname"
+					],
+					"query": [
+						{
+							"key": "filtername",
+							"value": "JAN-2022"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { Chat, Contact } from "venom-bot";
 import { formatNumber } from "../helpers/formatNumber";
 import { sleep } from "../helpers/sleep";
 import VenomClient from "../VenomClient";
@@ -144,6 +145,49 @@ class SenderController {
             },
           });
         }
+      });
+    } catch (err) {
+      return res.status(500).json({
+        success: false,
+        data: {
+          error: err,
+        },
+      });
+    }
+  }
+
+  static async getAllContacts(req: Request, res: Response) {
+    try {
+      const contacts = await venomClient.WhatsappClient.getAllContacts();
+      return res.status(200).json({
+        success: true,
+        data: {
+          contacts,
+        },
+      });
+    } catch (err) {
+      return res.status(500).json({
+        success: false,
+        data: {
+          error: err,
+        },
+      });
+    }
+  }
+
+  static async getContactsByName(req: Request, res: Response) {
+    const { filtername } = req.query;
+    try {
+      const contacts: Contact[] =
+        await venomClient.WhatsappClient.getAllContacts();
+      const filtredContacts: Contact[] = contacts.filter((contact) => {
+        return contact.name?.includes(String(filtername));
+      });
+      return res.status(200).json({
+        success: true,
+        data: {
+          filtredContacts,
+        },
       });
     } catch (err) {
       return res.status(500).json({
