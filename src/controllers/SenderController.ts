@@ -16,7 +16,8 @@ class SenderController {
 
   static async sendMessage(req: Request, res: Response) {
     const { number, message } = req.body;
-    const to = formatNumber(number);
+    //const to = formatNumber(number);
+    const to = number;
 
     try {
       await venomClient.WhatsappClient.sendText(to, message);
