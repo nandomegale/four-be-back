@@ -16,8 +16,8 @@ class SenderController {
 
   static async sendMessage(req: Request, res: Response) {
     const { number, message } = req.body;
-    //const to = formatNumber(number);
-    const to = number;
+    const to = formatNumber(number);
+    // const to = number;
 
     try {
       await venomClient.WhatsappClient.sendText(to, message);
@@ -43,7 +43,8 @@ class SenderController {
   static async sendMessageWithDelay(req: Request, res: Response) {
     const { numbers, message, delay } = req.body;
     numbers.forEach(async (number: string, index: number) => {
-      let to = formatNumber(number);
+      //let to = formatNumber(number);
+      let to = number;
       try {
         await sleep(Number(delay) * 1000 * index);
         await venomClient.WhatsappClient.sendText(to, message);
