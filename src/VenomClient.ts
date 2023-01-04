@@ -1,5 +1,6 @@
-import { Whatsapp, CatchQR, StatusFind, SocketState } from "venom-bot";
-const fs = require("fs");
+import { CatchQR, SocketState, StatusFind, Whatsapp } from "venom-bot";
+import fs from "fs";
+import { sendSocketMsg } from "./webSocket";
 const venom = require("venom-bot");
 
 class VenomClient {
@@ -26,6 +27,8 @@ class VenomClient {
   private initialize() {
     const catchQR: CatchQR = (base64Qr, asciiQR, attempts, urlCode) => {
       this._qrCode = base64Qr;
+      sendSocketMsg(JSON.stringify({ base64Qr }));
+      sendSocketMsg(JSON.stringify({ attempts }));
 
       // para criar um arquivo com o qrcode
       // var matches = base64Qr.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/),
@@ -52,12 +55,16 @@ class VenomClient {
 
     const statusFind: StatusFind = (statusGet: string, session: string) => {
       this._status = statusGet;
+      sendSocketMsg(JSON.stringify({ statusGet }));
     };
 
     const start = (client: Whatsapp) => {
       this.WhatsappClient = client;
 
+      //debugger não chega aqui
+      //testar deslogando pra ver se chegar
       client.onStateChange((state: SocketState) => {
+        console.log(state);
         this.setStatus = state;
       });
     };

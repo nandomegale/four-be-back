@@ -13,5 +13,8 @@ router.get("/getallcontacts", SenderController.getAllContacts)
 
 router.get("/getcontactsbyname", SenderController.getContactsByName)
 
+//router.get("/startconnection", SenderController.startConnection)
+
+
 
 export default router;

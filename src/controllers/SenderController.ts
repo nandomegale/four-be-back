@@ -1,10 +1,8 @@
 import { Request, Response } from "express";
-import { Chat, Contact } from "venom-bot";
+import { Contact } from "venom-bot";
 import { formatNumber } from "../helpers/formatNumber";
 import { sleep } from "../helpers/sleep";
-import VenomClient from "../VenomClient";
-
-const venomClient = new VenomClient();
+import { venomClient } from "../webSocket";
 
 class SenderController {
   static async status(req: Request, res: Response) {
@@ -200,6 +198,14 @@ class SenderController {
       });
     }
   }
+
+  // static async startConnection(req: Request, res: Response) {
+  //   venomClient = new VenomClient();
+  //   const status = venomClient.status;
+  //   if (status == "connected") {
+  //     //return res.status(200).json({ status });
+  //   }
+  // }
 }
 
 export default SenderController;

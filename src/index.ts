@@ -1,17 +1,24 @@
+import cors from "cors";
 import express from "express";
+import http from "http";
+import WebSocket from "ws";
 import routes from "./routes";
-import cors from "cors"
+import webSocket from "./webSocket";
 
 const app = express();
 app.use(cors());
 routes(app);
 
-app.get("/default", (req, res) => {
-  return res.status(200).json({ mensagem: "servidor ok!" });
+const server = http.createServer(app);
+
+const wss: WebSocket.Server<WebSocket.WebSocket> = new WebSocket.Server({
+  server: server,
 });
 
-app.listen(5000, () => {
+webSocket(wss);
+
+server.listen(5000, () => {
   console.log("Servidor iniciado");
 });
 
-export default app;
+export default server;
