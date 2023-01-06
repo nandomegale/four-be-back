@@ -2,53 +2,82 @@ import { Request, Response } from "express";
 import { Contact } from "venom-bot";
 import { formatNumber } from "../helpers/formatNumber";
 import { sleep } from "../helpers/sleep";
-import { venomClient } from "../webSocket";
+import VenomClient from "../VenomClient";
 
 class SenderController {
   static async status(req: Request, res: Response) {
-    return res.send({
-      qrCode: venomClient.qrCode,
-      status: venomClient.status,
-    });
+    if (VenomClient.instance) {
+      return res.send({
+        qrCode: VenomClient.instance.qrCode,
+        status: VenomClient.instance.status,
+      });
+    } else {
+      return res.status(500).json({
+        success: false,
+        data: {
+          error: "Whatsapp não iniciado",
+        },
+      });
+    }
   }
 
   static async sendMessage(req: Request, res: Response) {
-    const { number, message } = req.body;
-    const to = formatNumber(number);
-    // const to = number;
+    if (VenomClient.instance) {
+      const { number, message } = req.body;
+      const to = formatNumber(number);
+      // const to = number;
 
-    try {
-      await venomClient.WhatsappClient.sendText(to, message);
-      return res.status(200).json({
-        success: true,
-        data: {
-          to,
-          message,
-        },
-      });
-    } catch (err) {
-      res.status(500).json({
+      try {
+        await VenomClient.instance.WhatsappClient.sendText(to, message);
+        return res.status(200).json({
+          success: true,
+          data: {
+            to,
+            message,
+          },
+        });
+      } catch (err) {
+        res.status(500).json({
+          success: false,
+          data: {
+            to,
+            message,
+          },
+          error: err,
+        });
+      }
+    } else {
+      return res.status(500).json({
         success: false,
         data: {
-          to,
-          message,
+          error: "Whatsapp não iniciado",
         },
-        error: err,
       });
     }
   }
 
   static async sendMessageWithDelay(req: Request, res: Response) {
-    const { numbers, message, delay } = req.body;
-    numbers.forEach(async (number: string, index: number) => {
-      //let to = formatNumber(number);
-      let to = number;
-      try {
-        await sleep(Number(delay) * 1000 * index);
-        await venomClient.WhatsappClient.sendText(to, message);
-        if (index === numbers.length - 1) {
-          return res.status(200).json({
-            success: true,
+    if (VenomClient.instance) {
+      const { numbers, message, delay } = req.body;
+      numbers.forEach(async (number: string, index: number) => {
+        //let to = formatNumber(number);
+        let to = number;
+        try {
+          await sleep(Number(delay) * 1000 * index);
+          await VenomClient.instance.WhatsappClient.sendText(to, message);
+          if (index === numbers.length - 1) {
+            return res.status(200).json({
+              success: true,
+              data: {
+                numbers,
+                message,
+                delay,
+              },
+            });
+          }
+        } catch (err) {
+          res.status(500).json({
+            success: false,
             data: {
               numbers,
               message,
@@ -56,67 +85,37 @@ class SenderController {
             },
           });
         }
-      } catch (err) {
-        res.status(500).json({
-          success: false,
-          data: {
-            numbers,
-            message,
-            delay,
-          },
-        });
-      }
-    });
-  }
-
-  static async sendImage(req: Request, res: Response) {
-    const { number, imagePath, imageName, caption } = req.body;
-    const to = formatNumber(number);
-    try {
-      await venomClient.WhatsappClient.sendImage(
-        to,
-        imagePath,
-        imageName,
-        caption
-      );
-      return res.status(200).json({
-        success: true,
-        data: {
-          to,
-          imagePath,
-          imageName,
-          caption,
-        },
       });
-    } catch (err) {
+    } else {
       return res.status(500).json({
         success: false,
         data: {
-          error: err,
+          error: "Whatsapp não iniciado",
         },
       });
     }
   }
 
-  static async sendImageWithDelay(req: Request, res: Response) {
-    const { numbers, imagePath, caption, delay } = req.body;
-
-    numbers.forEach(async (number: string, index: number) => {
-      let to = formatNumber(number);
+  static async sendImage(req: Request, res: Response) {
+    if (VenomClient.instance) {
+      const { number, imagePath, imageName, caption } = req.body;
+      const to = formatNumber(number);
       try {
-        await sleep(delay * 1000 * index);
-        await venomClient.WhatsappClient.sendImage(to, imagePath, "", caption);
-        if (index === numbers.length - 1) {
-          return res.status(200).json({
-            success: true,
-            data: {
-              numbers,
-              imagePath,
-              caption,
-              delay,
-            },
-          });
-        }
+        await VenomClient.instance.WhatsappClient.sendImage(
+          to,
+          imagePath,
+          imageName,
+          caption
+        );
+        return res.status(200).json({
+          success: true,
+          data: {
+            to,
+            imagePath,
+            imageName,
+            caption,
+          },
+        });
       } catch (err) {
         return res.status(500).json({
           success: false,
@@ -125,7 +124,58 @@ class SenderController {
           },
         });
       }
-    });
+    } else {
+      return res.status(500).json({
+        success: false,
+        data: {
+          error: "Whatsapp não iniciado",
+        },
+      });
+    }
+  }
+
+  static async sendImageWithDelay(req: Request, res: Response) {
+    if (VenomClient.instance) {
+      const { numbers, imagePath, caption, delay } = req.body;
+
+      numbers.forEach(async (number: string, index: number) => {
+        let to = formatNumber(number);
+        try {
+          await sleep(delay * 1000 * index);
+          await VenomClient.instance.WhatsappClient.sendImage(
+            to,
+            imagePath,
+            "",
+            caption
+          );
+          if (index === numbers.length - 1) {
+            return res.status(200).json({
+              success: true,
+              data: {
+                numbers,
+                imagePath,
+                caption,
+                delay,
+              },
+            });
+          }
+        } catch (err) {
+          return res.status(500).json({
+            success: false,
+            data: {
+              error: err,
+            },
+          });
+        }
+      });
+    } else {
+      return res.status(500).json({
+        success: false,
+        data: {
+          error: "Whatsapp não iniciado",
+        },
+      });
+    }
   }
 
   static async testDelay(req: Request, res: Response) {
@@ -157,51 +207,73 @@ class SenderController {
   }
 
   static async getAllContacts(req: Request, res: Response) {
-    try {
-      const contacts = await venomClient.WhatsappClient.getAllContacts();
-      return res.status(200).json({
-        success: true,
-        data: {
-          contacts,
-        },
-      });
-    } catch (err) {
+    if (VenomClient.instance) {
+      try {
+        const contacts =
+          await VenomClient.instance.WhatsappClient.getAllContacts();
+        return res.status(200).json({
+          success: true,
+          data: {
+            contacts,
+          },
+        });
+      } catch (err) {
+        return res.status(404).json({
+          success: false,
+          data: {
+            error: err,
+          },
+        });
+      }
+    } else {
       return res.status(500).json({
         success: false,
         data: {
-          error: err,
+          error: "Whatsapp não iniciado",
         },
       });
     }
   }
 
   static async getContactsByName(req: Request, res: Response) {
-    const { filtername } = req.query;
-    try {
-      const contacts: Contact[] =
-        await venomClient.WhatsappClient.getAllContacts();
-      const filtredContacts: Contact[] = contacts.filter((contact) => {
-        return contact.name?.includes(String(filtername));
-      });
-      return res.status(200).json({
-        success: true,
-        data: {
-          filtredContacts,
-        },
-      });
-    } catch (err) {
+    if (VenomClient.instance) {
+      const { filtername } = req.query;
+      try {
+        const contacts: Contact[] =
+          await VenomClient.instance.WhatsappClient.getAllContacts();
+
+        const filtredContacts: Contact[] = contacts?.filter(
+          (contact) => {
+            return contact.name?.includes(String(filtername));
+          }
+        );
+        return res.status(200).json({
+          success: true,
+          data: {
+            filtredContacts,
+          },
+        });
+      } catch (err) {
+        return res.status(500).json({
+          success: false,
+          data: {
+            error: err,
+          },
+        });
+      }
+    } else {
       return res.status(500).json({
         success: false,
         data: {
-          error: err,
+          error: "Whatsapp não iniciado",
         },
       });
     }
   }
 
   // static async startConnection(req: Request, res: Response) {
-  //   venomClient = new VenomClient();
-  //   const status = venomClient.status;
+  //   VenomClient.instance = new VenomClient();
+  //   const status = VenomClient.instance.status;
   //   if (status == "connected") {
   //     //return res.status(200).json({ status });
   //   }

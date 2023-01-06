@@ -4,9 +4,18 @@ import { sendSocketMsg } from "./webSocket";
 const venom = require("venom-bot");
 
 class VenomClient {
+  static instance: VenomClient;
+
   public WhatsappClient: Whatsapp;
   private _status: string;
   private _qrCode: string;
+
+  // static getInstance(): VenomClient | null {
+  //   if (!VenomClient.instance) {
+  //     return null;
+  //   }
+  //   return VenomClient.instance;
+  // }
 
   public get status(): string {
     return this._status;
@@ -21,6 +30,10 @@ class VenomClient {
   }
 
   constructor() {
+    if (VenomClient.instance) {
+      return VenomClient.instance;
+    }
+    VenomClient.instance = this;
     this.initialize();
   }
 
