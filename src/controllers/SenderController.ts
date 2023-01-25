@@ -242,11 +242,9 @@ class SenderController {
         const contacts: Contact[] =
           await VenomClient.instance.WhatsappClient.getAllContacts();
 
-        const filtredContacts: Contact[] = contacts?.filter(
-          (contact) => {
-            return contact.name?.includes(String(filtername));
-          }
-        );
+        const filtredContacts: Contact[] = contacts?.filter((contact) => {
+          return contact.name?.includes(String(filtername));
+        });
         return res.status(200).json({
           success: true,
           data: {
@@ -271,13 +269,43 @@ class SenderController {
     }
   }
 
-  // static async startConnection(req: Request, res: Response) {
-  //   VenomClient.instance = new VenomClient();
-  //   const status = VenomClient.instance.status;
-  //   if (status == "connected") {
-  //     //return res.status(200).json({ status });
-  //   }
-  // }
+  static async disconnect(req: Request, res: Response) {
+    if (VenomClient.instance) {
+      let disconnected = false;
+      try {
+        disconnected = await VenomClient.instance.WhatsappClient.logout();
+        if (disconnected) {
+          return res.status(200).json({
+            success: true,
+            data: {
+              message: "Usuário desconectado com sucesso!",
+            },
+          });
+        } else {
+          return res.status(500).json({
+            success: false,
+            data: {
+              error: "Não foi possível desconectar",
+            },
+          });
+        }
+      } catch (err: any) {
+        return res.status(500).json({
+          success: false,
+          data: {
+            error: err.message,
+          },
+        });
+      }
+    } else {
+      return res.status(500).json({
+        success: false,
+        data: {
+          error: "Whatsapp não iniciado",
+        },
+      });
+    }
+  }
 }
 
 export default SenderController;

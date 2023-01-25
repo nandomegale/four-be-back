@@ -9,12 +9,12 @@ router.post("/sendimage", SenderController.sendImage);
 router.post("/sendimagewithdelay", SenderController.sendImageWithDelay);
 router.post("/testdelay", SenderController.testDelay);
 
-router.get("/getallcontacts", SenderController.getAllContacts)
+router.get("/getallcontacts", SenderController.getAllContacts);
 
-router.get("/getcontactsbyname", SenderController.getContactsByName)
+router.get("/getcontactsbyname", SenderController.getContactsByName);
+
+router.get("/disconnect", SenderController.disconnect);
 
 //router.get("/startconnection", SenderController.startConnection)
-
-
 
 export default router;
