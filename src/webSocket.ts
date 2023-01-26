@@ -6,8 +6,12 @@ const webSocket = (wss: WebSocketServer) => {
   wss.on("connection", (socket: WebSocket) => {
     sockets.push(socket);
     socket.on("message", (msg, isBinary) => {
-      if (msg.toString() == "gerarQRCode") {
-        new VenomClient();
+      const message = JSON.parse(msg.toString());
+      if (message == "openws") {
+        const status = VenomClient.instance.status;
+        sendSocketMsg(`{"status": "${status}"}`);
+      } else if (message == "gerarQRCode") {
+        VenomClient.instance.initialize();
       }
       //   wss.clients.forEach((s) => {
       //     const message = isBinary ? msg : msg.toString();

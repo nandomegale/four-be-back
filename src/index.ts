@@ -3,6 +3,7 @@ import express from "express";
 import http from "http";
 import WebSocket from "ws";
 import routes from "./routes";
+import VenomClient from "./VenomClient";
 import webSocket from "./webSocket";
 
 const app = express();
@@ -19,6 +20,8 @@ webSocket(wss);
 
 server.listen(5000, () => {
   console.log("Servidor iniciado");
+  new VenomClient();
+
 });
 
 export default server;

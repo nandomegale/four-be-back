@@ -6,7 +6,7 @@ class VenomClient {
   static instance: VenomClient;
 
   public WhatsappClient: venom.Whatsapp;
-  private _status: string;
+  private _status: string = "disconnected";
   private _qrCode: string;
 
   public get status(): string {
@@ -26,10 +26,10 @@ class VenomClient {
       return VenomClient.instance;
     }
     VenomClient.instance = this;
-    this.initialize();
+    //this.initialize();
   }
 
-  private initialize() {
+  public initialize() {
     const catchQR: venom.CatchQR = (base64Qr, asciiQR, attempts, urlCode) => {
       this._qrCode = base64Qr;
       sendSocketMsg(JSON.stringify({ base64Qr }));
@@ -42,7 +42,7 @@ class VenomClient {
     ) => {
       this._status = statusGet;
       console.log(statusGet);
-      sendSocketMsg(JSON.stringify({ statusGet }));
+      sendSocketMsg(JSON.stringify({ status: statusGet }));
     };
 
     const start = (client: venom.Whatsapp) => {
